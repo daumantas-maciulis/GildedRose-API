@@ -70,14 +70,11 @@ class ItemController extends AbstractController
             if (!$responseFromModel) {
                 return $this->json("You have selected non existent category", Response::HTTP_BAD_REQUEST);
             }
-            return $this->json($responseFromModel, Response::HTTP_OK, [], [
-                ObjectNormalizer::IGNORED_ATTRIBUTES => [
-                    'category'
-                ]
-            ]);
+            return $this->json($responseFromModel, Response::HTTP_OK);
         }
         $errors = $validator->validate($form);
 
         return $this->json($errors, Response::HTTP_BAD_REQUEST);
     }
+
 }

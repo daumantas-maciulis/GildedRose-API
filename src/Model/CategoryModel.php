@@ -18,7 +18,7 @@ class CategoryModel
         $this->categoryRepository = $entityManager->getRepository(Category::class);
     }
 
-    private function saveData(Category $category):Category
+    private function saveData(Category $category): Category
     {
         $this->entityManager->persist($category);
         $this->entityManager->flush();
@@ -29,5 +29,28 @@ class CategoryModel
     public function saveCategory(Category $category): Category
     {
         return $this->saveData($category);
+    }
+
+    public function fetchCategory(string $categoryName)
+    {
+        $category = $this->categoryRepository->findBy(['name' => $categoryName]);
+
+        if (!$category) {
+            return null;
+        }
+
+        return $category;
+    }
+
+    public function fetchItemsFromCategory(string $categoryName)
+    {
+        $category = $this->categoryRepository->findOneBy(['name' => $categoryName]);
+        if (!$category) {
+            return null;
+        }
+        /** @var Category $category */
+        return $category->getItems();
+
+
     }
 }

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ItemRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * @ORM\Entity(repositoryClass=ItemRepository::class)
@@ -24,7 +25,6 @@ class Item
 
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="items")
-     * @ORM\JoinColumn(nullable=false)
      */
     private $category;
 

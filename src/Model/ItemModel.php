@@ -30,6 +30,12 @@ class ItemModel
         return $item;
     }
 
+    private function deleteData(Item $item): void
+    {
+        $this->entityManager->remove($item);
+        $this->entityManager->flush();
+    }
+
     public function saveNewItem(Item $item): ?Item
     {
         $category = $this->categoryRepository->findOneBy(['name' => $item->getCategoryName()]);
@@ -60,5 +66,10 @@ class ItemModel
         $item->setValue($itemFromForm->getValue());
 
         return $this->saveData($item);
+    }
+
+    public function deleteItem(Item $item): void
+    {
+        $this->deleteData($item);
     }
 }
