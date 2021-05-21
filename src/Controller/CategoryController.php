@@ -34,11 +34,12 @@ class CategoryController extends AbstractController
 
         $form->submit(json_decode($request->getContent(), true));
 
-        if($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $savedCategory = $categoryModel->saveCategory($form->getData());
 
-            return $this->json($savedCategory, Response::HTTP_OK);
+            return $this->json($savedCategory, Response::HTTP_OK, [], [
+                ObjectNormalizer::IGNORED_ATTRIBUTES => ['items']
+            ]);
         }
 
         $errors = $validator->validate($form);
@@ -53,15 +54,14 @@ class CategoryController extends AbstractController
     public function getItemsFromCategoryAction(Request $request, CategoryModel $categoryModel): JsonResponse
     {
         $category = $categoryModel->fetchCategory($request->get('name'));
-        if(!$category)
-        {
+        if (!$category) {
             return $this->json("Please select existent category", Response::HTTP_BAD_REQUEST);
         }
 
         return $this->json($category, Response::HTTP_OK, [], [
             ObjectNormalizer::IGNORED_ATTRIBUTES => ['categoryName'],
             ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
-            return $object->getName();
+                return $object->getName();
             }
         ]);
     }
@@ -73,12 +73,10 @@ class CategoryController extends AbstractController
     {
         $categoryName = $request->get('name');
         $items = $categoryModel->fetchItemsFromCategory($categoryName);
-        if(!$items)
-        {
+        if (!$items) {
             return $this->json("Please select existent category", Response::HTTP_BAD_REQUEST);
         }
-        foreach($items as $item)
-        {
+        foreach ($items as $item) {
             $itemModel->deleteItem($item);
         }
         $responseMessage = sprintf("Items from category '%s' was successfully deleted", $categoryName);
