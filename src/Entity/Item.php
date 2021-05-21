@@ -18,6 +18,11 @@ class Item
     private $id;
 
     /**
+     * @ORM\Column(type="string")
+     */
+    private $categoryName;
+
+    /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="items")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -90,4 +95,15 @@ class Item
 
         return $this;
     }
+
+    public function getCategoryName()
+    {
+        return $this->categoryName;
+    }
+
+    public function setCategoryName($categoryName): void
+    {
+        $this->categoryName = $categoryName;
+    }
+
 }

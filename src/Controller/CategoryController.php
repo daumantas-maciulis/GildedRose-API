@@ -27,9 +27,7 @@ class CategoryController extends AbstractController
     public function createCategoryAction(Request $request, CategoryModel $categoryModel): JsonResponse
     {
         $serializer = new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
-
         $deserializedData = $serializer->deserialize($request->getContent(), Category::class, 'json');
-
         $form = $this->createForm(CategoryType::class, $deserializedData);
 
         $form->submit(json_decode($request->getContent(), true));
