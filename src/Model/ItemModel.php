@@ -43,4 +43,22 @@ class ItemModel
 
         return $this->saveData($item);
     }
+
+    public function updateItem(Item $item, Item $itemFromForm): ?Item
+    {
+        $category = $this->categoryRepository->findOneBy(['name' => $itemFromForm->getCategoryName()]);
+        if(!$category)
+        {
+            return null;
+        }
+
+        /** @var Category $category */
+        $item->setCategory($category);
+        $item->setCategoryName($itemFromForm->getCategoryName());
+        $item->setName($itemFromForm->getName());
+        $item->setQuality($itemFromForm->getQuality());
+        $item->setValue($itemFromForm->getValue());
+
+        return $this->saveData($item);
+    }
 }
