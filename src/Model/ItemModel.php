@@ -72,4 +72,11 @@ class ItemModel
     {
         $this->deleteData($item);
     }
+
+    public function deleteItemById(int $id): void
+    {
+        $item = $this->itemRepository->find($id);
+        /** @var Item $item */
+        $this->deleteData($item);
+    }
 }

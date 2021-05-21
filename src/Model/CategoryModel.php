@@ -26,6 +26,12 @@ class CategoryModel
         return $category;
     }
 
+    private function deleteData(Category $category): void
+    {
+        $this->entityManager->remove($category);
+        $this->entityManager->flush();
+    }
+
     public function saveCategory(Category $category): ?Category
     {
         $categoryInDb = $this->categoryRepository->findOneBy(['name'=>$category->getName()]);
@@ -37,14 +43,14 @@ class CategoryModel
         return $this->saveData($category);
     }
 
-    public function fetchCategory(string $categoryName)
+    public function fetchCategory(string $categoryName): ?Category
     {
-        $category = $this->categoryRepository->findBy(['name' => $categoryName]);
+        $category = $this->categoryRepository->findOneBy(['name' => $categoryName]);
 
         if (!$category) {
             return null;
         }
-
+        /** @var Category $category */
         return $category;
     }
 
@@ -56,7 +62,26 @@ class CategoryModel
         }
         /** @var Category $category */
         return $category->getItems();
+    }
 
+    public function deleteCategory(string $categoryName): bool
+    {
+        $category = $this->categoryRepository->findOneBy(['name' => $categoryName]);
 
+        if(!$category)
+        {
+            return false;
+        }
+        /** @var Category $category */
+        $this->deleteData($category);
+
+        return true;
+    }
+
+    public function updateCategory(Category $categoryFromForm, Category $categoryFromDb): Category
+    {
+        $categoryFromDb->setName($categoryFromForm->getName());
+
+        return $this->saveData($categoryFromDb);
     }
 }
