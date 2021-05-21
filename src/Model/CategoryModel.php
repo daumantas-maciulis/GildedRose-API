@@ -26,8 +26,14 @@ class CategoryModel
         return $category;
     }
 
-    public function saveCategory(Category $category): Category
+    public function saveCategory(Category $category): ?Category
     {
+        $categoryInDb = $this->categoryRepository->findOneBy(['name'=>$category->getName()]);
+        if($categoryInDb)
+        {
+            return null;
+        }
+
         return $this->saveData($category);
     }
 

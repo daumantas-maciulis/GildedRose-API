@@ -36,6 +36,10 @@ class CategoryController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $savedCategory = $categoryModel->saveCategory($form->getData());
+            if (!$savedCategory) {
+                $errorMessage = sprintf("Category named '%s' is already created", $deserializedData->getName());
+                return $this->json($errorMessage, Response::HTTP_BAD_REQUEST);
+            }
 
             return $this->json($savedCategory, Response::HTTP_OK, [], [
                 ObjectNormalizer::IGNORED_ATTRIBUTES => ['items']

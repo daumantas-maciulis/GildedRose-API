@@ -16,6 +16,7 @@ use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Unique;
 
 class ItemType extends AbstractType
 {
@@ -32,8 +33,8 @@ class ItemType extends AbstractType
             ->add('name', TextType::class, [
                 'constraints' => [
                     new NotBlank(),
-                    new Regex('/_item$/')
-                ]
+                    new Regex('/_item$/'),
+                ],
             ])
             ->add('value', NumberType::class, [
                 'constraints' => [
