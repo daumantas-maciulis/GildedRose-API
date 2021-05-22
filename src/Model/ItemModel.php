@@ -64,6 +64,7 @@ class ItemModel
         $item->setName($itemFromForm->getName());
         $item->setQuality($itemFromForm->getQuality());
         $item->setValue($itemFromForm->getValue());
+        $item->setSellIn($itemFromForm->getSellIn());
 
         return $this->saveData($item);
     }

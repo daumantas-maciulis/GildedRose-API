@@ -41,7 +41,9 @@ class ItemType extends AbstractType
                     new LessThanOrEqual(50)
                 ]
             ])
-            ->add('categoryName', TextType::class);
+            ->add('categoryName', TextType::class)
+            ->add("sellIn", IntegerType::class)
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
