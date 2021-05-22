@@ -33,7 +33,6 @@ class CategoryController extends AbstractController
         $form = $this->createForm(CategoryType::class, $deserializedData);
 
         $form->submit(json_decode($request->getContent(), true));
-
         if ($form->isSubmitted() && $form->isValid()) {
             $savedCategory = $categoryModel->saveCategory($form->getData());
             if (!$savedCategory) {
