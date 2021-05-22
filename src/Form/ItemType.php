@@ -16,16 +16,9 @@ use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
-use Symfony\Component\Validator\Constraints\Unique;
 
 class ItemType extends AbstractType
 {
-    private $categoryRepository;
-
-    public function __construct(CategoryRepository $categoryRepository)
-    {
-        $this->categoryRepository = $categoryRepository;
-    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
