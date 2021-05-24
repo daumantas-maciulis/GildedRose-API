@@ -32,51 +32,57 @@ class UpdatePricesService
     {
         /** @var Item $item */
         foreach ($this->items as $item) {
+            if ($item->getCategoryName() != self::BRIE && $item->getCategoryName() != self::PASSES && $item->getQuality() > 0) {
+                if ($item->getCategoryName() != self::SULFURAS) {
+                    $item->setQuality($item->getQuality() - 1);
+                }
+                if ($item->getCategoryName() == self::CONJURED) {
+                    $item->setQuality($item->getQuality() - 1);
+                }
+            } else {
+                if ($item->getQuality() < 50) {
+                    $item->setQuality($item->getQuality() + 1);
+                }
+                if ($item->getCategoryName() == self::PASSES && $item->getQuality() < 50) {
+                    $item->setQuality($this->updateConcertPassesQuality($item));
+                }
+            }
+
             if ($item->getCategoryName() != self::SULFURAS) {
                 $item->setSellIn($item->getSellIn() - 1);
             }
 
-            if (in_array($item->getCategoryName(), self::SPECIAL_ITEMS, true) == false && $item->getQuality() > 0) {
-                $item->setQuality($item->getQuality() - 1);
-                if ($item->getCategoryName() === self::CONJURED) {
-                    $item->setQuality($item->getQuality() - 1);
-                }
-            }
-            if (in_array($item->getCategoryName(), self::SPECIAL_ITEMS, true) && $item->getQuality() < 50) {
-                $item->setQuality($item->getQuality() + 1);
-                if ($item->getCategoryName() == self::PASSES) {
-                    $item->setQuality($this->itemIsConcertPasses($item)) ;
-                }
-            }
             if ($item->getSellIn() < 0) {
-                $item->setQuality($this->sellInLessThanZero($item));
+                $item->setQuality($this->updateSellInDateIfZero($item));
             }
-
-            $this->itemModel->updateItemFromCommand($item);
         }
     }
 
-    private function sellInLessThanZero(Item $item): int
+    private function updateConcertPassesQuality(Item $item): int
     {
-        if ($item->getCategoryName() == self::BRIE && $item->getQuality() < 50) {
-            return $item->getQuality() + 1;
+        if ($item->getSellIn() < 11) {
+            $item->setQuality($item->getQuality() + 1);
         }
-//        if ($itemCategoryName == self::PASSES) {
-//            return 0;
-//        }
-        if ($item->getQuality() > 0 && $item->getCategoryName() != self::SULFURAS) {
-            return $item->getQuality() - 1;
+        if ($item->getSellIn() < 6) {
+            $item->setQuality($item->getQuality() + 1);
         }
-        return 0;
+
+        return $item->getQuality();
     }
 
-    private function itemIsConcertPasses(Item $item): int
+    private function updateSellInDateIfZero(Item $item): int
     {
-        if ($item->getSellIn() < 11 && $item->getQuality() < 50) {
+        if ($item->getCategoryName() == self::PASSES && $item->getCategoryName() != self::BRIE) {
+            $item->setQuality(0);
+        }
+        if ($item->getName() == self::BRIE && $item->getQuality() < 50) {
             $item->setQuality($item->getQuality() + 1);
         }
-        if ($item->getSellIn() < 6 && $item->getQuality() < 50) {
-            $item->setQuality($item->getQuality() + 1);
+        if (in_array($item->getCategoryName(), self::SPECIAL_ITEMS) == false && $item->getQuality() > 0) {
+            $item->setQuality($item->getQuality() - 1);
+        }
+        if ($item->getCategoryName() == self::CONJURED) {
+            $item->setQuality($item->getQuality() - 2);
         }
 
         return $item->getQuality();
