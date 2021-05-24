@@ -1,21 +1,19 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Controller;
-
 
 use App\Entity\Category;
 use App\Form\CategoryType;
 use App\Model\CategoryModel;
 use App\Model\ItemModel;
+use App\Serializer\Serializer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -26,10 +24,9 @@ class CategoryController extends AbstractController
     /**
      * @Route("", methods="POST")
      */
-    public function createCategoryAction(Request $request, CategoryModel $categoryModel, ValidatorInterface $validator): JsonResponse
+    public function createCategoryAction(Request $request, CategoryModel $categoryModel, ValidatorInterface $validator, Serializer $serializer): JsonResponse
     {
-        $serializer = new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
-        $deserializedData = $serializer->deserialize($request->getContent(), Category::class, 'json');
+        $deserializedData = $serializer->deserialize($request->getContent(), Category::class);
         $form = $this->createForm(CategoryType::class, $deserializedData);
 
         $form->submit(json_decode($request->getContent(), true));
@@ -40,19 +37,18 @@ class CategoryController extends AbstractController
                 return $this->json($errorMessage, Response::HTTP_BAD_REQUEST);
             }
 
-            return $this->json($savedCategory, Response::HTTP_OK, [], [
+            return $this->json($savedCategory, Response::HTTP_CREATED, [], [
                 ObjectNormalizer::IGNORED_ATTRIBUTES => ['items']
             ]);
         }
 
-        $errors = $validator->validate($form);
-
-        return $this->json($errors, Response::HTTP_BAD_REQUEST);
+        //todo form validation errors https://symfonycasts.com/screencast/symfony-rest2/validation-errors-response
+        return $this->json($validator->validate($form), Response::HTTP_BAD_REQUEST);
     }
 
 
     /**
-     * @Route("", methods="GET")
+     * @Route("/{name}", methods="GET")
      */
     public function getItemsFromCategoryAction(Request $request, CategoryModel $categoryModel): JsonResponse
     {
@@ -70,7 +66,7 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("", methods="DELETE")
+     * @Route("/{name}", methods="DELETE")
      */
     public function deleteItemsFromCategoryAction(Request $request, CategoryModel $categoryModel, ItemModel $itemModel): JsonResponse
     {
@@ -86,3 +82,4 @@ class CategoryController extends AbstractController
         return $this->json($responseMessage, Response::HTTP_OK);
     }
 }
+

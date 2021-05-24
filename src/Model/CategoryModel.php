@@ -1,15 +1,14 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Model;
-
 
 use App\Entity\Category;
 use Doctrine\ORM\EntityManagerInterface;
 
 class CategoryModel
 {
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
     private $categoryRepository;
 
     public function __construct(EntityManagerInterface $entityManager)
@@ -20,6 +19,7 @@ class CategoryModel
 
     private function saveData(Category $category): Category
     {
+        //todo make try catch exception handling
         $this->entityManager->persist($category);
         $this->entityManager->flush();
 
@@ -67,7 +67,6 @@ class CategoryModel
     public function deleteCategory(string $categoryName): bool
     {
         $category = $this->categoryRepository->findOneBy(['name' => $categoryName]);
-
         if(!$category)
         {
             return false;
@@ -85,3 +84,4 @@ class CategoryModel
         return $this->saveData($categoryFromDb);
     }
 }
+

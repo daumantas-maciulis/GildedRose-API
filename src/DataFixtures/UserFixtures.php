@@ -1,8 +1,7 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\DataFixtures;
-
 
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -18,8 +17,7 @@ class UserFixtures extends Fixture
 
     private function loadUsers($manager)
     {
-        foreach ($this->getUser() as [$email, $password, $role, $firstName, $lastName, $phoneNumber, $position])
-        {
+        foreach ($this->getUser() as [$email, $password, $role, $firstName, $lastName, $phoneNumber, $position]) {
             $user = new User();
             $user->setEmail($email);
             $user->setPassword($password);
@@ -39,7 +37,7 @@ class UserFixtures extends Fixture
         return [
             ["admin@admin.com", '$argon2id$v=19$m=65536,t=4,p=1$CMcThvQf4bVUGnGnY1ISOw$c7Gmme6eZ3kEN4miUM23+PHpPrz6f4wkin7IG0FCYMY', ["ROLE_ADMIN"], "name", "lastname", "+37061111111", "ceo"],
             ["labas@labas.com", '$argon2id$v=19$m=65536,t=4,p=1$CMcThvQf4bVUGnGnY1ISOw$c7Gmme6eZ3kEN4miUM23+PHpPrz6f4wkin7IG0FCYMY', ["ROLE_USER"], "name", "lastname", "+37061111111", "ceo"],
-
         ];
     }
 }
+

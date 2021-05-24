@@ -1,8 +1,7 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\DataFixtures;
-
 
 use App\Entity\Category;
 use App\Entity\Item;
@@ -19,9 +18,8 @@ class ItemFixtures extends Fixture
 
     private function loadItems($manager)
     {
-        foreach ($this->getItems() as [$categoryName, $itemName, $value, $quality, $sellIn])
-        {
-            /**@var EntityManagerInterface$manager */
+        foreach ($this->getItems() as [$categoryName, $itemName, $value, $quality, $sellIn]) {
+            /**@var EntityManagerInterface $manager */
 
             $item = new Item();
             $item->setCategoryName($categoryName);

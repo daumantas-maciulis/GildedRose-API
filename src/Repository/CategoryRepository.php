@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Repository;
 
@@ -20,3 +21,4 @@ class CategoryRepository extends ServiceEntityRepository
     }
 
 }
+

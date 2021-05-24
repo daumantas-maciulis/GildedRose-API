@@ -1,16 +1,15 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Services;
-
 
 use App\Entity\Item;
 use App\Model\ItemModel;
 
 class UpdatePricesService
 {
-    private $items;
-    private $itemModel;
+    private array $items;
+    private ItemModel $itemModel;
 
     private const BRIE = "Aged Brie";
     private const PASSES = "Backstage passes";
@@ -59,16 +58,16 @@ class UpdatePricesService
 
     private function sellInLessThanZero(Item $item): int
     {
-        $itemCategoryName = $item->getCategoryName();
-        if ($itemCategoryName = self::BRIE && $item->getQuality() < 50) {
+        if ($item->getCategoryName() == self::BRIE && $item->getQuality() < 50) {
             return $item->getQuality() + 1;
         }
-        if ($itemCategoryName = self::PASSES) {
-            return 0;
-        }
-        if ($item->getQuality() > 0 && $itemCategoryName != self::SULFURAS) {
+//        if ($itemCategoryName == self::PASSES) {
+//            return 0;
+//        }
+        if ($item->getQuality() > 0 && $item->getCategoryName() != self::SULFURAS) {
             return $item->getQuality() - 1;
         }
+        return 0;
     }
 
     private function itemIsConcertPasses(Item $item): int
@@ -83,3 +82,4 @@ class UpdatePricesService
         return $item->getQuality();
     }
 }
+

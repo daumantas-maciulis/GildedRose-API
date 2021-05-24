@@ -1,8 +1,7 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Model;
-
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,7 +9,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserModel
 {
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
     private $userRepository;
     private $passwordEncoder;
 
@@ -23,6 +22,7 @@ class UserModel
 
     private function saveData(User $user): User
     {
+        //todo try catch block for exception handling
         $this->entityManager->persist($user);
         $this->entityManager->flush();
         return $user;
@@ -54,3 +54,4 @@ class UserModel
         return $user;
     }
 }
+

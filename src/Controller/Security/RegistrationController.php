@@ -1,20 +1,18 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Controller\Security;
-
 
 use App\Entity\User;
 use App\Form\RegistrationType;
 use App\Model\UserModel;
+use App\Serializer\Serializer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -25,10 +23,9 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/create-account", methods="POST")
      */
-    public function registerNewUserAction(Request $request, UserModel $userModel, ValidatorInterface $validator): JsonResponse
+    public function registerNewUserAction(Request $request, UserModel $userModel, ValidatorInterface $validator, Serializer $serializer): JsonResponse
     {
-        $serializer = new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
-        $deserializedData = $serializer->deserialize($request->getContent(), User::class, 'json');
+        $deserializedData = $serializer->deserialize($request->getContent(), User::class);
 
         $form = $this->createForm(RegistrationType::class, $deserializedData);
 
@@ -42,7 +39,7 @@ class RegistrationController extends AbstractController
                 return $this->json($responseMessage, Response::HTTP_BAD_REQUEST);
             }
 
-            return $this->json($returnedUser, Response::HTTP_OK, [], [
+            return $this->json($returnedUser, Response::HTTP_CREATED, [], [
                 ObjectNormalizer::IGNORED_ATTRIBUTES => ['password', 'username', 'salt']
             ]);
         }
@@ -52,3 +49,4 @@ class RegistrationController extends AbstractController
         return $this->json($errors, Response::HTTP_BAD_REQUEST);
     }
 }
+

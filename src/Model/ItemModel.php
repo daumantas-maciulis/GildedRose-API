@@ -1,8 +1,7 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Model;
-
 
 use App\Entity\Category;
 use App\Entity\Item;
@@ -10,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ItemModel
 {
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
     private $itemRepository;
     private $categoryRepository;
 
@@ -24,10 +23,10 @@ class ItemModel
 
     private function saveData(Item $item): Item
     {
-        $this->entityManager->persist($item);
-        $this->entityManager->flush();
-
-        return $item;
+        //todo try catch
+            $this->entityManager->persist($item);
+            $this->entityManager->flush();
+            return $item;
     }
 
     private function deleteData(Item $item): void
@@ -39,8 +38,7 @@ class ItemModel
     public function saveNewItem(Item $item): ?Item
     {
         $category = $this->categoryRepository->findOneBy(['name' => $item->getCategoryName()]);
-        if(!$category)
-        {
+        if (!$category) {
             return null;
         }
 
@@ -53,8 +51,7 @@ class ItemModel
     public function updateItem(Item $item, Item $itemFromForm): ?Item
     {
         $category = $this->categoryRepository->findOneBy(['name' => $itemFromForm->getCategoryName()]);
-        if(!$category)
-        {
+        if (!$category) {
             return null;
         }
 
@@ -80,4 +77,15 @@ class ItemModel
         /** @var Item $item */
         $this->deleteData($item);
     }
+
+    public function getAllItems(): array
+    {
+        return $this->itemRepository->findAll();
+    }
+
+    public function updateItemFromCommand(Item $item)
+    {
+        $this->saveData($item);
+    }
 }
+

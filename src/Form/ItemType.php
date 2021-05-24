@@ -1,11 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Form;
 
 use App\Entity\Item;
-use App\Repository\CategoryRepository;
-use Doctrine\DBAL\Types\FloatType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -54,3 +52,4 @@ class ItemType extends AbstractType
         ]);
     }
 }
+

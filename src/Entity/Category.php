@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -6,7 +7,6 @@ use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
@@ -18,12 +18,12 @@ class Category
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\OneToMany(targetEntity=Item::class, mappedBy="category", orphanRemoval=true)
@@ -52,9 +52,6 @@ class Category
         return $this;
     }
 
-    /**
-     * @return Collection|Item[]
-     */
     public function getItems(): Collection
     {
         return $this->items;
@@ -73,7 +70,6 @@ class Category
     public function removeItem(Item $item): self
     {
         if ($this->items->removeElement($item)) {
-            // set the owning side to null (unless already changed)
             if ($item->getCategory() === $this) {
                 $item->setCategory(null);
             }
@@ -81,9 +77,5 @@ class Category
 
         return $this;
     }
-
-//    public function __toString()
-//    {
-//        return $this->name;
-//    }
 }
+

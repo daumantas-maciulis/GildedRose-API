@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -7,14 +7,12 @@ use App\Entity\Category;
 use App\Form\CategoryType;
 use App\Model\CategoryModel;
 use App\Model\ItemModel;
+use App\Serializer\Serializer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\JsonDecode;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -23,11 +21,13 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class AdminController extends AbstractController
 {
     /**
-     * @Route("/item/", methods="DELETE")
+     * @Route("/item/{id}", methods="DELETE")
      */
     public function deleteItemAction(Request $request, ItemModel $itemModel): JsonResponse
     {
         $itemModel->deleteItemById($request->get('id'));
+
+        //todo response if not Item
 
         $responseMessage = sprintf("Your item No. %s was successfully deleted", $request->get('id'));
 
@@ -35,7 +35,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/category/", methods="DELETE")
+     * @Route("/category/{name}", methods="DELETE")
      */
     public function deleteCategoryAction(Request $request, CategoryModel $categoryModel): JsonResponse
     {
@@ -51,9 +51,9 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/category/", methods="PATCH")
+     * @Route("/category/{name}", methods="PATCH")
      */
-    public function updateCategoryAction(Request $request, CategoryModel $categoryModel, ValidatorInterface $validator)
+    public function updateCategoryAction(Request $request, CategoryModel $categoryModel, ValidatorInterface $validator, Serializer $serializer): JsonResponse
     {
         $categoryFromDb = $categoryModel->fetchCategory($request->get('name'));
         if (!$categoryFromDb) {
@@ -61,21 +61,19 @@ class AdminController extends AbstractController
             return $this->json($responseMessage, Response::HTTP_BAD_REQUEST);
         }
 
-        $serializer = new Serializer([new ObjectNormalizer()], [new JsonDecode()]);
-        $deserializedData = $serializer->deserialize($request->getContent(), Category::class, 'json');
+        $deserializedData = $serializer->deserialize($request->getContent(), Category::class);
 
         $form = $this->createForm(CategoryType::class, $deserializedData);
 
         $form->submit(json_decode($request->getContent(), true));
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $updatedCatetegory = $categoryModel->updateCategory($form->getData(), $categoryFromDb);
+            $updatedCategory = $categoryModel->updateCategory($form->getData(), $categoryFromDb);
 
-            return $this->json($updatedCatetegory, Response::HTTP_OK);
+            return $this->json($updatedCategory, Response::HTTP_CREATED);
         }
 
-        $errors = $validator->validate($form);
-
-        return $this->json($errors, Response::HTTP_BAD_REQUEST);
+        return $this->json($validator->validate($form), Response::HTTP_BAD_REQUEST);
     }
 }
+
