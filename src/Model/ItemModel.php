@@ -23,10 +23,9 @@ class ItemModel
 
     private function saveData(Item $item): Item
     {
-        //todo try catch
-            $this->entityManager->persist($item);
-            $this->entityManager->flush();
-            return $item;
+        $this->entityManager->persist($item);
+        $this->entityManager->flush();
+        return $item;
     }
 
     private function deleteData(Item $item): void
@@ -71,11 +70,17 @@ class ItemModel
         $this->deleteData($item);
     }
 
-    public function deleteItemById(int $id): void
+    public function deleteItemById(string $id): bool
     {
         $item = $this->itemRepository->find($id);
+
+        if (!$item) {
+            return false;
+        }
+
         /** @var Item $item */
         $this->deleteData($item);
+        return true;
     }
 
     public function getAllItems(): array

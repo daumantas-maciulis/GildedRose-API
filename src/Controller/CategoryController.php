@@ -42,7 +42,6 @@ class CategoryController extends AbstractController
             ]);
         }
 
-        //todo form validation errors https://symfonycasts.com/screencast/symfony-rest2/validation-errors-response
         return $this->json($validator->validate($form), Response::HTTP_BAD_REQUEST);
     }
 

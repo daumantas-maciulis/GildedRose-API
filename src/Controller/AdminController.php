@@ -25,9 +25,12 @@ class AdminController extends AbstractController
      */
     public function deleteItemAction(Request $request, ItemModel $itemModel): JsonResponse
     {
-        $itemModel->deleteItemById($request->get('id'));
+        $returnedBool = $itemModel->deleteItemById($request->get('id'));
 
-        //todo response if not Item
+        if ($returnedBool == false) {
+            $responseMessage = sprintf("There is no Item with ID No. %s", $request->get('id'));
+            return $this->json($responseMessage, Response::HTTP_BAD_REQUEST);
+        }
 
         $responseMessage = sprintf("Your item No. %s was successfully deleted", $request->get('id'));
 

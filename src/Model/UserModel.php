@@ -22,7 +22,6 @@ class UserModel
 
     private function saveData(User $user): User
     {
-        //todo try catch block for exception handling
         $this->entityManager->persist($user);
         $this->entityManager->flush();
         return $user;

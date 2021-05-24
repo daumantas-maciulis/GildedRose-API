@@ -19,7 +19,6 @@ class CategoryModel
 
     private function saveData(Category $category): Category
     {
-        //todo make try catch exception handling
         $this->entityManager->persist($category);
         $this->entityManager->flush();
 
@@ -34,9 +33,8 @@ class CategoryModel
 
     public function saveCategory(Category $category): ?Category
     {
-        $categoryInDb = $this->categoryRepository->findOneBy(['name'=>$category->getName()]);
-        if($categoryInDb)
-        {
+        $categoryInDb = $this->categoryRepository->findOneBy(['name' => $category->getName()]);
+        if ($categoryInDb) {
             return null;
         }
 
@@ -67,8 +65,7 @@ class CategoryModel
     public function deleteCategory(string $categoryName): bool
     {
         $category = $this->categoryRepository->findOneBy(['name' => $categoryName]);
-        if(!$category)
-        {
+        if (!$category) {
             return false;
         }
         /** @var Category $category */
