@@ -1,3 +1,37 @@
+# GildedRose API Requirements
+
+Create a new repository with Laravel. We’re going to build an API for GuildedRose.
+Use any kind of database.
+We should be able to interact with these models:
+
+## Category
+
+* id, type integer
+* name, type string, validation: must be at least 5 symbols
+
+## Item
+
+* id, type integer
+* category, type relation to Category table
+* name, type string, validation: must always end in _item prefix
+* value, type float, validation: At least 10, no greater than 100
+* quality, type integer, validation: at least -10, no greater than 50
+
+## Api need to perform theese actions:
+* Create category
+* Create item
+* Update item
+* Return all items based on a category. E.g. Return all items that belongs to the 'Aged Brie' category
+* Delete all items based on a category. E.g. Delete all items that belong to the 'Sulfuras' category
+
+## Evaluation criteria;
+* RESTfulness of endpoints
+* Validation enforcement
+* Code style
+* API documentation of some sort (e.g. Readme)
+
+---- 
+
 # GildedRose API
 
 This API is created to manage Gilded Rose stock and automatically renew Item quality through Cron Job.
